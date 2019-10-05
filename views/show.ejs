@@ -1,0 +1,19 @@
+<% include partials/header %>
+
+<h1>Show template</h1>
+
+<img src="<%= camp.image %>">
+
+<p><%=camp.name%></p>
+<p><%=camp.description%></p>
+
+<a class="btn btn-default" href="/camps">Go Back</a>
+
+<% camp.comments.forEach((comment)=> { %>
+    <p> 
+      <em><%= comment.author %></em> - <%= comment.text %> 
+    </p>
+<% }); %>
+
+
+<% include partials/footer %>
