@@ -15,7 +15,7 @@ mongoose.connect(urlLocal, {useNewUrlParser: true } );
 
 app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({extended: true}));
-
+app.use(express.static(__dirname + "/public"));
 /*seedDB(); // <-add initial camps*/
 
 
