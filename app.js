@@ -16,23 +16,8 @@ mongoose.connect(urlLocal, {useNewUrlParser: true } );
 app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({extended: true}));
 
-//seedDB(); // <-add initial camps
+/*seedDB(); // <-add initial camps*/
 
-/*
-OLD SEED
-Camp.create(
-  {
-    name: 'Next tent',
-    image: 'https://ak.picdn.net/offset/photos/54a2e01aa6dfde507e9fcfd2/medium/offset_171435.jpg',
-    description: "Some random pic with tent"
-  },(err, camp) =>{ //callback fn
-    if(err){
-      console.log(err);
-    }else{
-      console.log("New camp: ");
-      console.log(camp);
-    }
-  });*/
 
 app.get("/", (req ,res) => {
   res.render('home');
@@ -46,7 +31,7 @@ app.get("/camps",(req, res) => {
       console.log(err);
     }else{
       //render data
-      res.render('index', {camps: allCamps});
+      res.render('camps/index', {camps: allCamps});
     }
   });
 });
@@ -71,7 +56,7 @@ app.post("/camps", (req, res) =>{
 
 //NEW -show form to create new camp
 app.get("/camps/new", (req, res) =>{
-  res.render("new.ejs");
+  res.render("camps/new");
 });
 
 //SHOW
@@ -83,14 +68,54 @@ app.get("/camps/:id", (req, res) => {
     }else{
       //console.log(foundCamp);
       //render 'show.ejs' template with that camp
-      res.render("show", {camp: foundCamp});
+      res.render("camps/show", {camp: foundCamp});
     }
   });
   req.params.id
 });
 
 
+// COMMENTS ROUTES -nested routes
+
+app.get("/camps/:id/comments/new", (req,res ) => {
+  //find camp by id
+  Camp.findById(req.params.id, (err, camp) => {
+    if(err){
+      console.log(err);
+    }else {
+      res.render("comments/new", {camp: camp});
+    }
+  });
+});
+
+app.post("/camps/:id/comments", (req, res)=> {
+  //lookup camp using ID
+  Camp.findById(req.params.id, (err, camp)=> {
+    if(err){
+      console.log(err);
+      redirect("/camps");
+    }else {
+      console.log(req.body.comment);
+      Comment.create(req.body.comment, (err, comment)=> {
+        if(err){
+          console.log(err);
+        }else {
+          //create new comment
+          camp.comments.push(comment); 
+          //connect new comment to camp
+          camp.save();
+          //redirect camp show page
+          res.redirect('/camps/' + camp._id);
+        }
+      });
+    }
+  });
+});
+
+
 
 app.listen(port, () => {
-  console.log(`Yelp serwer listening on port ${port}`);
+  console.log(`Serwer listening on port ${port}`);
 });
+
+  
