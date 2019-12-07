@@ -3,8 +3,11 @@ const port = 3000,
       app = express(),
       bodyParser = require('body-parser'),
       mongoose = require('mongoose'),
-      Camp = require('./models/campground'),
-      seedDB = require('./seeds'),
+      //seedDB = require('./seeds'),
+			passport = require("passport"),
+			LocalStrategy = require("passport-local"),
+			User = require("./models/user"),
+			Camp = require('./models/campground'),
       Comment = require('./models/comment');
 
 
@@ -13,10 +16,25 @@ const urlLocal = 'mongodb://localhost/yelp_camp';
 /*mongoose.connect('mongodb://localhost/yelp_camp'); -old */
 mongoose.connect(urlLocal, {useNewUrlParser: true } );
 
+//app config
 app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static(__dirname + "/public"));
 /*seedDB(); // <-add initial camps*/
+
+//passport config
+app.use(require("express-session")({
+	secret: "Some strings to decode",
+	resave: false,
+	saveUninitialized: false
+}));
+app.use(passport.initialize());
+app.use(passport.session());
+passport.use(new LocalStrategy(User.authenticate()));
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
+
+
 
 
 app.get("/", (req ,res) => {
@@ -111,6 +129,14 @@ app.post("/camps/:id/comments", (req, res)=> {
     }
   });
 });
+
+
+// AUTHORIZATION ROUTES
+
+app.get("/register", (req, res) => {
+	res.render("register");
+});
+
 
 
 
