@@ -1,11 +1,16 @@
 body {
   background-color: cornsilk;
 }
-
-.img-thumbnail img {
-  width: 100%; 
+.navbar{
+	margin-bottom: 4vh;
 }
 
 .img-thumbnail {
-  padding: 0;
+  padding: 2vh;
+}
+
+ul.navbar-right li {
+	border: black 1px solid;
+	border-radius: 5px;
+	padding: 1vw;
 }

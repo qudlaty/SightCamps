@@ -24,7 +24,7 @@ app.use(express.static(__dirname + "/public"));
 
 //passport config
 app.use(require("express-session")({
-	secret: "Some strings to decode",
+	secret: "Some string to decode",
 	resave: false,
 	saveUninitialized: false
 }));
@@ -34,7 +34,14 @@ passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
+//pass user to all routes, middleware
+app.use((req,res,next)=>{
+	res.locals.currentUser = req.user;
+	next();
+});
 
+
+//===ROUTES=================================
 
 
 app.get("/", (req ,res) => {
@@ -43,6 +50,7 @@ app.get("/", (req ,res) => {
 
 //INDEX route- show all camps
 app.get("/camps",(req, res) => {
+	//console.log(req.user);
   // get camps from db
   Camp.find({}, (err, allCamps) => {
     if(err){
@@ -55,7 +63,7 @@ app.get("/camps",(req, res) => {
 });
 
 //CREATE - add new to db 
-app.post("/camps", (req, res) =>{
+app.post("/camps", isLoggedIn, (req, res) =>{
   // get data from form
   const name = req.body.name;
   const image = req.body.url;
@@ -73,11 +81,11 @@ app.post("/camps", (req, res) =>{
 }); 
 
 //NEW -show form to create new camp
-app.get("/camps/new", (req, res) =>{
+app.get("/camps/new", isLoggedIn, (req, res) =>{
   res.render("camps/new");
 });
 
-//SHOW
+//SHOW camp
 app.get("/camps/:id", (req, res) => {
   //find camp with provided id
   Camp.findById(req.params.id).populate('comments').exec((err, foundCamp) =>{
@@ -95,7 +103,7 @@ app.get("/camps/:id", (req, res) => {
 
 // COMMENTS ROUTES -nested routes
 
-app.get("/camps/:id/comments/new", (req,res ) => {
+app.get("/camps/:id/comments/new", isLoggedIn, (req,res ) => {
   //find camp by id
   Camp.findById(req.params.id, (err, camp) => {
     if(err){
@@ -106,7 +114,7 @@ app.get("/camps/:id/comments/new", (req,res ) => {
   });
 });
 
-app.post("/camps/:id/comments", (req, res)=> {
+app.post("/camps/:id/comments", isLoggedIn, (req, res)=> {
   //lookup camp using ID
   Camp.findById(req.params.id, (err, camp)=> {
     if(err){
@@ -133,10 +141,54 @@ app.post("/camps/:id/comments", (req, res)=> {
 
 // AUTHORIZATION ROUTES
 
+//show register
 app.get("/register", (req, res) => {
 	res.render("register");
 });
 
+// sign up logic
+app.post('/register', (req, res)=>{
+	
+	let newUser = new User({username: req.body.username}); 
+	
+	User.register(newUser, req.body.password, (err, user)=>{
+		if(err){
+			console.log(err);
+			return res.render('register');
+		}
+		passport.authenticate('local')(req, res, ()=>{
+			res.redirect('/camps');
+		});
+	});
+});
+
+//show login
+app.get("/login", (req, res) => {
+	res.render("login");
+});
+
+//handle login fast 
+app.post("/login", passport.authenticate('local', {
+	successRedirect: '/camps',
+	failureRedirect: '/login',
+	//failureFlash: 'true'-  add message
+}), (req, res) => {
+});//callabck not nececery here if never used
+
+// logout route
+app.get('/logout', (req, res) => {
+	req.logout();
+	res.redirect('/camps');
+});
+
+
+//middleware
+function isLoggedIn (req, res, next){
+	if(req.isAuthenticated()){
+		return next();
+	}
+	res.redirect('/login');
+}
 
 
 
