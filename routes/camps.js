@@ -1,6 +1,6 @@
 const express = require("express"),
-		router = express.Router(),
-		Camp = require('../models/campground');
+			router = express.Router(),
+			Camp = require('../models/campground');
 
 //===ROUTES===
 
@@ -27,13 +27,19 @@ router.post("/camps", isLoggedIn, (req, res) =>{
   // get data from form
   const name = req.body.name;
   const image = req.body.url;
-  const description = req.body.description
-  const newCamp = {name, image, description};// es6
+  const description = req.body.description;
+	const author = {
+		id: req.user._id,
+		username: req.user.username
+	};
+	
+	const newCamp = {name, image, description, author};// es6{use 'n',not 'n:n'}
   //create new camp and save to db
-  Camp.create(newCamp, (err, newCamp) => {
+  Camp.create(newCamp, (err, newlyCreated) => {
     if(err){
       console.log(err); //deal with form later
     }else{
+			console.log("from CREATE CAMP", newlyCreated);
       //redirect back to camps page
       res.redirect("/camps");
     }
