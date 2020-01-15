@@ -67,7 +67,7 @@ router.get("/camps/:id", (req, res)=>{
 });
 
 // EDIT CAMP Route
-router.get("/camps/:id/edit", (req, res)=>{
+router.get("/camps/:id/edit", isLoggedIn, (req, res)=>{
 	Camp.findById(req.params.id, (err, foundCamp)=>{
 		console.log(foundCamp.id);
 		if(err){
@@ -79,19 +79,29 @@ router.get("/camps/:id/edit", (req, res)=>{
 });
 
 // UPDATE CAMP Route
-
-router.put("/camps/:id", (req, res) => {
+router.put("/camps/:id", isLoggedIn, (req, res) => {
 	//--find and update correct camp
-	//let data = {name: req.body.name, image: req.body.image}-long way
+	//let data = {name: req.body.name}-long way
 	Camp.findByIdAndUpdate(req.params.id, req.body.camp, (err, updatedCamp)=>{ //betterway
 		if(err){
 			res.redirect("/camps");	
 		} else{
+				//redirect to show page
 			res.redirect("/camps/" + req.params.id);
 		}
-		
 	});
-	//redirect to show page
+});
+
+//DESTROY
+
+router.delete("/camps/:id", isLoggedIn, (req, res)=>{
+	Camp.findByIdAndRemove(req.params.id, (err,)=>{
+		if(err){
+			res.redirect("/camps");
+		} else{
+			res.redirect("/camps");
+		}
+	});
 });
 
 

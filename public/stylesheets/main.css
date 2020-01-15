@@ -14,3 +14,7 @@ ul.navbar-right li {
 	border-radius: 5px;
 	padding: 1vw;
 }
+
+#del-form {
+	display: inline;
+}
