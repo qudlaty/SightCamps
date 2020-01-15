@@ -67,19 +67,14 @@ router.get("/camps/:id", (req, res)=>{
 });
 
 // EDIT CAMP Route
-router.get("/camps/:id/edit", isLoggedIn, (req, res)=>{
-	Camp.findById(req.params.id, (err, foundCamp)=>{
-		console.log(foundCamp.id);
-		if(err){
-			res.redirect("/camps");
-		} else {
+router.get("/camps/:id/edit", checkCampOwnership, (req, res)=>{
+		Camp.findById(req.params.id, (err, foundCamp)=>{
 			res.render("camps/edit", {foundCamp});
-		}
-	});
+		});
 });
 
 // UPDATE CAMP Route
-router.put("/camps/:id", isLoggedIn, (req, res) => {
+router.put("/camps/:id", checkCampOwnership, (req, res) => {
 	//--find and update correct camp
 	//let data = {name: req.body.name}-long way
 	Camp.findByIdAndUpdate(req.params.id, req.body.camp, (err, updatedCamp)=>{ //betterway
@@ -92,9 +87,9 @@ router.put("/camps/:id", isLoggedIn, (req, res) => {
 	});
 });
 
-//DESTROY
 
-router.delete("/camps/:id", isLoggedIn, (req, res)=>{
+//DESTROY
+router.delete("/camps/:id", checkCampOwnership, (req, res)=>{
 	Camp.findByIdAndRemove(req.params.id, (err,)=>{
 		if(err){
 			res.redirect("/camps");
@@ -105,12 +100,35 @@ router.delete("/camps/:id", isLoggedIn, (req, res)=>{
 });
 
 
-// middleware
+// middleware1
 function isLoggedIn (req, res, next){
 	if(req.isAuthenticated()){
 		return next();
 	}
 	res.redirect('/login');
+}
+// middleware2
+function checkCampOwnership(req, res, next){
+	//is user logged??
+	if(req.isAuthenticated()){
+		Camp.findById(req.params.id, (err, foundCamp)=>{
+			if(err){
+				res.redirect("back");
+			} else {
+				//console.log(foundCamp.author.id);-mongoose object
+				//console.log(req.user._id);-string, diffrent id's
+				//does user own camp??
+				if(foundCamp.author.id.equals(req.user._id)){
+					//allow next only if both if's are true
+					next();
+				} else {
+					res.redirect("back");
+				}
+			}
+		});
+	} else{
+		res.redirect("back");
+	}
 }
 
 module.exports = router;
