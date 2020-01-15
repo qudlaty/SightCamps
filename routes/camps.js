@@ -52,7 +52,7 @@ router.get("/camps/new", isLoggedIn, (req, res) =>{
 });
 
 //SHOW camp
-router.get("/camps/:id", (req, res) => {
+router.get("/camps/:id", (req, res)=>{
   //find camp with provided id
   Camp.findById(req.params.id).populate('comments').exec((err, foundCamp) =>{
     if(err){
@@ -66,6 +66,36 @@ router.get("/camps/:id", (req, res) => {
   req.params.id
 });
 
+// EDIT CAMP Route
+router.get("/camps/:id/edit", (req, res)=>{
+	Camp.findById(req.params.id, (err, foundCamp)=>{
+		console.log(foundCamp.id);
+		if(err){
+			res.redirect("/camps");
+		} else {
+			res.render("camps/edit", {foundCamp});
+		}
+	});
+});
+
+// UPDATE CAMP Route
+
+router.put("/camps/:id", (req, res) => {
+	//--find and update correct camp
+	//let data = {name: req.body.name, image: req.body.image}-long way
+	Camp.findByIdAndUpdate(req.params.id, req.body.camp, (err, updatedCamp)=>{ //betterway
+		if(err){
+			res.redirect("/camps");	
+		} else{
+			res.redirect("/camps/" + req.params.id);
+		}
+		
+	});
+	//redirect to show page
+});
+
+
+// middleware
 function isLoggedIn (req, res, next){
 	if(req.isAuthenticated()){
 		return next();

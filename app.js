@@ -5,6 +5,7 @@ const port = 3000,
       mongoose = require('mongoose'),
       //seedDB = require('./seeds'),
 			passport = require("passport"),
+			methodOverride = require("method-override"),
 			LocalStrategy = require("passport-local"),
 			User = require("./models/user"),
 			Camp = require('./models/campground'),
@@ -23,6 +24,7 @@ mongoose.connect(urlLocal, {useNewUrlParser: true, useUnifiedTopology: true} );
 app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static(__dirname + "/public"));
+app.use(methodOverride('_method'));
 /*seedDB(); // <-add initial camps*/
 
 //passport config

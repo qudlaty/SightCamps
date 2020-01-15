@@ -14,11 +14,13 @@
       <div class="img-thumbnail">
         <img class="img-fluid" src="<%= camp.image %>">
         <div class="caption-full p-2">
-          <h4 class="float-right ">'Bests'</h4>
+          <h4 class="float-right ">'#bests'</h4>
           <h4><a href=""><%= camp.name %></a></h4>
           <p><%= camp.description %></p>
           <p><em>Submitted by </em><strong><%= camp.author.username %></strong></p>
+          <a class="btn btn-warning"  href="/camps/<%= camp._id %>/edit">Edit</a>
         </div>
+        
       </div>
       <div class="well">
         <div class="text-right">

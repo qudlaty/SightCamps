@@ -92,7 +92,7 @@ async function seedDB(){
     console.log("Comment added to camp");
   } 
     
-  }catch(err){
+  } catch(err) {
     console.log(err);
   }        
 }
