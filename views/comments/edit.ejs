@@ -1,0 +1,24 @@
+<% include ../partials/header %>
+
+<div class="container">
+   	<h1 class="text-center page-header">
+    	Edit: 
+			<small class="text-muted"><%= foundComment.text.substring(0,10); %>...</small>
+    </h1>    
+
+    <div style="width: 65%; margin: 0 auto">
+      
+      <form action="/camps/<%= onlyCamp_id %>/comments/<%= foundComment._id %>?_method=PUT" method="POST">
+        <div class="form-group">
+          <textarea class="form-control" type="text" name="comment[text]"><%= foundComment.text %></textarea>
+        </div>
+        <div class="form-group">
+          <button class="btn  btn-primary btn-block">Submit</button>
+        </div>
+      </form>
+      <a class="btn btn-info btn-block" href="/camps/<%= onlyCamp_id %>">Go Back</a>
+    </div>
+ 
+</div>
+
+<% include ../partials/footer %>

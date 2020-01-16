@@ -18,7 +18,7 @@ const commentsRoutes = require("./routes/comments"),
 
 // deprecated?
 const urlLocal = 'mongodb://localhost/yelp_camp';
-mongoose.connect(urlLocal, {useNewUrlParser: true, useUnifiedTopology: true} );
+mongoose.connect(urlLocal, {useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false} );
 
 //app config
 app.set("view engine", "ejs");

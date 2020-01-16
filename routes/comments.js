@@ -35,7 +35,7 @@ router.post("/", isLoggedIn, (req, res)=> {
 					comment.author.username = req.user.username;
 					comment.save();
 					
-					console.log('username from coments', req.user.username);
+					console.log(req.user.username,'from comments');
           //create new comment
           camp.comments.push(comment); 
           //connect new comment to camp
@@ -47,6 +47,31 @@ router.post("/", isLoggedIn, (req, res)=> {
     }
   });
 });
+
+//Comments Edit-nested 
+router.get("/:comment_id/edit", (req, res)=>{
+	Comment.findById(req.params.comment_id, (err, foundComment)=>{
+		if(err){
+			res.redirect("back");
+		}else{
+			res.render("comments/edit", {onlyCamp_id: req.params.id, foundComment});
+		}
+	});
+});
+
+//Comments Update
+//router.put("/camps/:id/comments/comment_id"-how it's really looking 
+router.put("/:comment_id", (req, res)=>{
+	Comment.findByIdAndUpdate(req.params.comment_id, req.body.comment, (err, updatedComment)=>{
+		if(err){
+			res.redirect("back");
+		} else{
+			res.redirect("/camps/" + req.params.id);
+		}
+	});
+});
+
+
 
 //middleware
 function isLoggedIn (req, res, next){
