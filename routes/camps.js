@@ -1,6 +1,7 @@
 const express = require("express"),
 			router = express.Router(),
-			Camp = require('../models/campground');
+			Camp = require("../models/camp"),
+			middleware = require("../middleware");
 
 //===ROUTES===
 
@@ -9,7 +10,7 @@ router.get("/", (req ,res) => {
 });
 
 //INDEX route- show all camps
-router.get("/camps",(req, res) => {
+router.get("/camps", (req, res) => {
 	//console.log(req.user);
   // get camps from db
   Camp.find({}, (err, allCamps) => {
@@ -23,7 +24,7 @@ router.get("/camps",(req, res) => {
 });
 
 //CREATE - add new to db 
-router.post("/camps", isLoggedIn, (req, res) =>{
+router.post("/camps", middleware.isLoggedIn, (req, res) => {
   // get data from form
   const name = req.body.name;
   const image = req.body.url;
@@ -32,8 +33,8 @@ router.post("/camps", isLoggedIn, (req, res) =>{
 		id: req.user._id,
 		username: req.user.username
 	};
-	
 	const newCamp = {name, image, description, author};// es6{use 'n',not 'n:n'}
+	
   //create new camp and save to db
   Camp.create(newCamp, (err, newlyCreated) => {
     if(err){
@@ -47,7 +48,7 @@ router.post("/camps", isLoggedIn, (req, res) =>{
 }); 
 
 //NEW -show form to create new camp
-router.get("/camps/new", isLoggedIn, (req, res) =>{
+router.get("/camps/new", middleware.isLoggedIn, (req, res) =>{
   res.render("camps/new");
 });
 
@@ -63,18 +64,18 @@ router.get("/camps/:id", (req, res)=>{
       res.render("camps/show", {camp: foundCamp});
     }
   });
-  req.params.id
+  //req.params.id
 });
 
 // EDIT CAMP Route
-router.get("/camps/:id/edit", checkCampOwnership, (req, res)=>{
+router.get("/camps/:id/edit", middleware.checkCampOwnership, (req, res)=>{
 		Camp.findById(req.params.id, (err, foundCamp)=>{
 			res.render("camps/edit", {foundCamp});
 		});
 });
 
 // UPDATE CAMP Route
-router.put("/camps/:id", checkCampOwnership, (req, res) => {
+router.put("/camps/:id", middleware.checkCampOwnership, (req, res) => {
 	//--find and update correct camp
 	//let data = {name: req.body.name}-long way
 	Camp.findByIdAndUpdate(req.params.id, req.body.camp, (err, updatedCamp)=>{ //betterway
@@ -89,7 +90,7 @@ router.put("/camps/:id", checkCampOwnership, (req, res) => {
 
 
 //DESTROY
-router.delete("/camps/:id", checkCampOwnership, (req, res)=>{
+router.delete("/camps/:id", middleware.checkCampOwnership, (req, res)=>{
 	Camp.findByIdAndRemove(req.params.id, (err,)=>{
 		if(err){
 			res.redirect("/camps");
@@ -98,37 +99,5 @@ router.delete("/camps/:id", checkCampOwnership, (req, res)=>{
 		}
 	});
 });
-
-
-// middleware1
-function isLoggedIn (req, res, next){
-	if(req.isAuthenticated()){
-		return next();
-	}
-	res.redirect('/login');
-}
-// middleware2
-function checkCampOwnership(req, res, next){
-	//is user logged??
-	if(req.isAuthenticated()){
-		Camp.findById(req.params.id, (err, foundCamp)=>{
-			if(err){
-				res.redirect("back");
-			} else {
-				//console.log(foundCamp.author.id);-mongoose object
-				//console.log(req.user._id);-string, diffrent id's
-				//does user own camp??
-				if(foundCamp.author.id.equals(req.user._id)){
-					//allow next only if both if's are true
-					next();
-				} else {
-					res.redirect("back");
-				}
-			}
-		});
-	} else{
-		res.redirect("back");
-	}
-}
 
 module.exports = router;

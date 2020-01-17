@@ -1,7 +1,7 @@
 const express = require("express"),
-		router = express.Router(),
-		User = require("../models/user"),
-		passport = require("passport");
+			router = express.Router(),
+			User = require("../models/user"),
+			passport = require("passport");
 
 
 // AUTHORIZATION ROUTES

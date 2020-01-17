@@ -8,7 +8,7 @@ const port = 3000,
 			methodOverride = require("method-override"),
 			LocalStrategy = require("passport-local"),
 			User = require("./models/user"),
-			Camp = require('./models/campground'),
+			Camp = require('./models/camp'),
       Comment = require('./models/comment');
 //req routes
 const commentsRoutes = require("./routes/comments"),
@@ -16,7 +16,7 @@ const commentsRoutes = require("./routes/comments"),
 			authRoutes = require("./routes/auth");
 
 
-// deprecated?
+// deprecated mongoose?
 const urlLocal = 'mongodb://localhost/yelp_camp';
 mongoose.connect(urlLocal, {useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false} );
 
