@@ -15,6 +15,10 @@ ul.navbar-right li {
 	padding: 1vw;
 }
 
-#del-form {
+.del-form {
 	display: inline;
+}
+
+.back-btn {
+	margin: 1em 0;
 }
