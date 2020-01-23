@@ -8,6 +8,7 @@ const Camp = require("../models/camp"),
 		if(req.isAuthenticated()){
 			Camp.findById(req.params.id, (err, foundCamp)=>{
 				if(err){
+					req.flash("error", "Camp not found");//flash message
 					res.redirect("back");
 				} else {
 					//console.log(foundCamp.author.id);-mongoose object
@@ -17,11 +18,13 @@ const Camp = require("../models/camp"),
 						//allow next only if both if's are true
 						next();
 					} else {
+						req.flash("error", "You need to be owner");//flash message
 						res.redirect("back");
 					}
 				}
 			});
 		} else{
+			req.flash("error", "Please login first");//flash message
 			res.redirect("back");
 		}
 	}
@@ -31,6 +34,7 @@ const Camp = require("../models/camp"),
 		if(req.isAuthenticated()){
 			Comment.findById(req.params.comment_id, (err, foundComment)=>{
 				if(err){
+					req.flash("error", "Comment not found");
 					res.redirect("back");
 				} else {
 					//does user own comment??
@@ -38,11 +42,13 @@ const Camp = require("../models/camp"),
 						//allow next only if both if's are true
 						next();
 					} else {
+						req.flash("error", "You need to be owner");
 						res.redirect("back");
 					}
 				}
 			});
 		} else{
+			req.flash("error", "Please login first");
 			res.redirect("back");
 		}
 	}
@@ -51,8 +57,8 @@ const Camp = require("../models/camp"),
 		if(req.isAuthenticated()){
 			return next();
 		}
+		req.flash("error", "Please login first");
 		res.redirect('/login');
 	}
-
 
 module.exports = middlewareObj

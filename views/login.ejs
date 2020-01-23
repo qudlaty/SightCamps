@@ -1,13 +1,14 @@
+
 <% include ./partials/header %>
-
-<h1>Login</h1>
-
-<form action="/login" method="post">
-	<input type="text" name="username" placeholder="username">
-	<input type="password" name="password" placeholder="password">
-	<button type="submit">Login</button>
-</form>
-
-<a class="btn btn-secondary" href="/">Home</a>
-
+	<div class="container">
+		<h2>Login</h2>
+		
+		<form action="/login" method="post">
+			<input type="text" name="username" placeholder="username">
+			<input type="password" name="password" placeholder="password">
+			<button type="submit">Login</button>
+		</form>
+		
+		<a class="btn btn-secondary" href="/">Home</a>
+	</div>
 <% include ./partials/footer %>

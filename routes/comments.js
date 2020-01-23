@@ -28,7 +28,7 @@ router.post("/", middleware.isLoggedIn, (req, res)=> {
       console.log(req.body.comment);
       Comment.create(req.body.comment, (err, comment)=> {
         if(err){
-          console.log(err);
+          req.flash("error", "Something went wrong");
         }else {
 					//add username and id to comment
 					comment.author.id = req.user._id;
@@ -40,7 +40,8 @@ router.post("/", middleware.isLoggedIn, (req, res)=> {
           camp.comments.push(comment); 
           //connect new comment to camp
           camp.save();
-          //redirect camp show page
+          //redirect camp show page, message ok
+					req.flash("success", "Comment added");
           res.redirect('/camps/' + camp._id);
         }
       });
@@ -79,6 +80,7 @@ router.delete("/:comment_id", middleware.checkCommentOwnership, (req, res)=>{
 		if(err){
 			res.redirect("back");
 		} else{
+			req.flash("success", "Comment deleted");
 			res.redirect("/camps/" + req.params.id);
 		}
 	});

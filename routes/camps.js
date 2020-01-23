@@ -1,12 +1,17 @@
 const express = require("express"),
 			router = express.Router(),
 			Camp = require("../models/camp"),
-			middleware = require("../middleware");
+			middleware = require("../middleware");//index.js is imported by default
 
 //===ROUTES===
 
+/* //for separete homepage
 router.get("/", (req ,res) => {
-  res.redirect('./camps');
+  res.render('../views/home.ejs');
+});*/
+
+router.get("/", (req ,res) => {
+  res.redirect('/camps');
 });
 
 //INDEX route- show all camps
@@ -70,6 +75,7 @@ router.get("/camps/:id", (req, res)=>{
 // EDIT CAMP Route
 router.get("/camps/:id/edit", middleware.checkCampOwnership, (req, res)=>{
 		Camp.findById(req.params.id, (err, foundCamp)=>{
+			req.flash("error", "Camp not found");
 			res.render("camps/edit", {foundCamp});
 		});
 });
@@ -82,7 +88,8 @@ router.put("/camps/:id", middleware.checkCampOwnership, (req, res) => {
 		if(err){
 			res.redirect("/camps");	
 		} else{
-				//redirect to show page
+			req.flash("success", "Camp updated");
+			//redirect to show page
 			res.redirect("/camps/" + req.params.id);
 		}
 	});
@@ -95,6 +102,7 @@ router.delete("/camps/:id", middleware.checkCampOwnership, (req, res)=>{
 		if(err){
 			res.redirect("/camps");
 		} else{
+			req.flash("success", "Camp deleted");
 			res.redirect("/camps");
 		}
 	});
