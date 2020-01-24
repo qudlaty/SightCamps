@@ -7,10 +7,10 @@ const express = require("express"),
 
 // AUTHORIZATION ROUTES
 
-/*//root route
+//root route
 router.get("/",(req, res)=>{
     res.render("home");
-});*/
+});
 
 //show register
 router.get("/register", (req, res) => {

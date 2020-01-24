@@ -61,20 +61,25 @@ router.get("/camps/new", middleware.isLoggedIn, (req, res) =>{
 router.get("/camps/:id", (req, res)=>{
   //find camp with provided id
   Camp.findById(req.params.id).populate('comments').exec((err, foundCamp) =>{
-    if(err){
-      console.log(err);
-    }else{
+    if(err || !foundCamp){
+			req.flash("error", "Camp not found");
+			return res.redirect("back");//del return if else
+    } else {
       //console.log(foundCamp);
       //render 'show.ejs' template with that camp
       res.render("camps/show", {camp: foundCamp});
     }
   });
-  //req.params.id
 });
 
 // EDIT CAMP Route
 router.get("/camps/:id/edit", middleware.checkCampOwnership, (req, res)=>{
 		Camp.findById(req.params.id, (err, foundCamp)=>{
+			
+			if(!foundCamp){
+				req.flash("error", "Item not found");
+				return res.redirect("back");
+			}
 			req.flash("error", "Camp not found");
 			res.render("camps/edit", {foundCamp});
 		});
@@ -94,7 +99,6 @@ router.put("/camps/:id", middleware.checkCampOwnership, (req, res) => {
 		}
 	});
 });
-
 
 //DESTROY
 router.delete("/camps/:id", middleware.checkCampOwnership, (req, res)=>{

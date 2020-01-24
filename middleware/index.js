@@ -1,4 +1,4 @@
-// all medllewaregoes here
+// all midlleware goes here
 const Camp = require("../models/camp"),
 			Comment = require("../models/comment")
 			middlewareObj = {};
@@ -7,7 +7,7 @@ const Camp = require("../models/camp"),
 		//is user logged??
 		if(req.isAuthenticated()){
 			Camp.findById(req.params.id, (err, foundCamp)=>{
-				if(err){
+				if(err || !foundCamp){ //foundCamp !==null
 					req.flash("error", "Camp not found");//flash message
 					res.redirect("back");
 				} else {
@@ -33,10 +33,10 @@ const Camp = require("../models/camp"),
 		//is user logged??
 		if(req.isAuthenticated()){
 			Comment.findById(req.params.comment_id, (err, foundComment)=>{
-				if(err){
+				if(err || !foundComment){
 					req.flash("error", "Comment not found");
 					res.redirect("back");
-				} else {
+				} else{
 					//does user own comment??
 					if(foundComment.author.id.equals(req.user._id)){
 						//allow next only if both if's are true
@@ -47,7 +47,7 @@ const Camp = require("../models/camp"),
 					}
 				}
 			});
-		} else{
+		} else {
 			req.flash("error", "Please login first");
 			res.redirect("back");
 		}

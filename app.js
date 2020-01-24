@@ -17,7 +17,6 @@ const commentsRoutes = require("./routes/comments"),
 			campsRoutes = require("./routes/camps"),
 			authRoutes = require("./routes/index");
 
-
 // deprecated mongoose?
 const urlLocal = 'mongodb://localhost/yelp_camp';
 mongoose.connect(urlLocal, {useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false} );
@@ -56,10 +55,6 @@ app.use(campsRoutes);
 app.use("/camps/:id/comments", commentsRoutes);
 // shorter path in comments routes^
 
-
-
 app.listen(port, () => {
   console.log(`Serwer listening on port ${port}`);
 });
-
-  

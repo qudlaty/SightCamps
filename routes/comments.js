@@ -1,5 +1,6 @@
 const express = require("express"),
-			router = express.Router({mergeParams: true}),//merge params from camps and comms
+			router = express.Router({mergeParams: true}),
+			//merge params from camps and comms
 			Camp = require('../models/camp'),
 			Comment = require('../models/comment'),
 			middleware = require("../middleware");
@@ -34,8 +35,8 @@ router.post("/", middleware.isLoggedIn, (req, res)=> {
 					comment.author.id = req.user._id;
 					comment.author.username = req.user.username;
 					comment.save();
+					//console.log(req.user.username,'from comments');
 					
-					console.log(req.user.username,'from comments');
           //create new comment
           camp.comments.push(comment); 
           //connect new comment to camp
@@ -49,15 +50,21 @@ router.post("/", middleware.isLoggedIn, (req, res)=> {
   });
 });
 
-//Comments Edit-nested
+//Comments Edit
 //router.put("/camps/:id/comments/comment_id/edit"-how it's looking 
 router.get("/:comment_id/edit", middleware.checkCommentOwnership, (req, res)=>{
-	Comment.findById(req.params.comment_id, (err, foundComment)=>{
-		if(err){
-			res.redirect("back");
-		}else{
-			res.render("comments/edit", {onlyCamp_id: req.params.id, foundComment});
+	Camp.findById(req.params.id, (err, foundCamp)=>{
+		if(err || !foundCamp){
+			req.flash('error', "No such Camp");
+			return res.redirect("back");// no else so return
 		}
+		Comment.findById(req.params.comment_id, (err, foundComment)=>{
+			if(err){
+				res.redirect("back");
+			} else{
+				res.render("comments/edit", {onlyCamp_id: req.params.id, foundComment});
+			}
+		});
 	});
 });
 
