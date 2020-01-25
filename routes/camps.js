@@ -5,14 +5,10 @@ const express = require("express"),
 
 //===ROUTES===
 
-/* //for separete homepage
-router.get("/", (req ,res) => {
-  res.render('../views/home.ejs');
-});*/
-
-router.get("/", (req ,res) => {
-  res.redirect('/camps');
+router.get("/",(req, res)=>{
+    res.render("landing");
 });
+
 
 //INDEX route- show all camps
 router.get("/camps", (req, res) => {

@@ -4,13 +4,7 @@ const express = require("express"),
 			User = require("../models/user");
 			
 
-
 // AUTHORIZATION ROUTES
-
-//root route
-router.get("/",(req, res)=>{
-    res.render("home");
-});
 
 //show register
 router.get("/register", (req, res) => {
