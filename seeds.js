@@ -64,7 +64,7 @@ const data = [
 
 
 /// ASYNC/AWAIT refactoring
-
+/*
 async function seedDB(){
   
   try {
@@ -97,5 +97,5 @@ async function seedDB(){
   }        
 }
   
-module.exports = seedDB;
+module.exports = seedDB;*/
 

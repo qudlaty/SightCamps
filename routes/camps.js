@@ -28,13 +28,14 @@ router.get("/camps", (req, res) => {
 router.post("/camps", middleware.isLoggedIn, (req, res) => {
   // get data from form
   const name = req.body.name;
+	const price = req.body.price;
   const image = req.body.url;
   const description = req.body.description;
 	const author = {
 		id: req.user._id,
 		username: req.user.username
 	};
-	const newCamp = {name, image, description, author};// es6{use 'n',not 'n:n'}
+	const newCamp = {name, price, image, description, author};// es6{use 'n',not 'n:n'}
 	
   //create new camp and save to db
   Camp.create(newCamp, (err, newlyCreated) => {
