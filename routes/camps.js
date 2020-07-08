@@ -35,7 +35,7 @@ router.post("/camps", middleware.isLoggedIn, (req, res) => {
 		id: req.user._id,
 		username: req.user.username
 	};
-	const newCamp = {name, price, image, description, author};// es6{use 'n',not 'n:n'}
+	const newCamp = {name, price, image, description, author};
 	
   //create new camp and save to db
   Camp.create(newCamp, (err, newlyCreated) => {
