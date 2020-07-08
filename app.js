@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const port = 3000,
       express = require('express'),
       app = express(),
@@ -18,8 +20,9 @@ const commentsRoutes = require("./routes/comments"),
 			authRoutes = require("./routes/index");
 
 // deprecated mongoose?
-const urlLocal = 'mongodb://localhost/yelp_camp';
-mongoose.connect(urlLocal, {useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false} );
+// mongoose config
+const urlLocal = 'mongodb://localhost/yelp_camp';//for local db
+mongoose.connect(process.env.DATABASE, {useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false} );
 
 //app config
 app.use(bodyParser.urlencoded({extended: true}));
